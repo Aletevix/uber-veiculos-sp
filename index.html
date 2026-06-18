@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uber — Black & Comfort SP</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f0f; color: #e8e8e8; }
+
+header { background: #1a1a1a; border-bottom: 2px solid #F5A623; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+header h1 { font-size: 1.3rem; font-weight: 700; color: #fff; }
+.header-badges { display: flex; gap: 8px; }
+.badge-black { background: #000; border: 1px solid #555; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+.badge-comfort { background: #1B2D5B; color: #F5A623; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+
+.controls { padding: 16px 28px; background: #141414; border-bottom: 1px solid #222; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.search-box input { padding: 9px 14px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; width: 240px; }
+.search-box input:focus { border-color: #F5A623; }
+.tab-btns { display: flex; gap: 6px; }
+.tab-btn { padding: 8px 18px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+.tab-black { background: #222; color: #aaa; border: 1px solid #333; }
+.tab-black.active { background: #111; color: #fff; border-color: #fff; }
+.tab-comfort { background: #222; color: #aaa; border: 1px solid #333; }
+.tab-comfort.active { background: #1B2D5B; color: #F5A623; border-color: #F5A623; }
+.tab-all { background: #222; color: #aaa; border: 1px solid #333; }
+.tab-all.active { background: #F5A623; color: #000; border-color: #F5A623; }
+
+.stats { padding: 10px 28px; background: #111; font-size: 0.82rem; color: #555; border-bottom: 1px solid #1a1a1a; }
+.stats span { color: #F5A623; font-weight: 700; }
+
+.grid { padding: 20px 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+
+.brand-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; overflow: hidden; }
+.brand-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+.brand-header.has-black { background: #1e1e1e; border-bottom: 2px solid #333; }
+.brand-header.has-comfort { background: #1a1f2e; border-bottom: 2px solid #1B2D5B; }
+.brand-header.has-both { background: #1e1e1e; border-bottom: 2px solid #333; }
+.brand-name { font-weight: 700; font-size: 0.95rem; color: #fff; }
+.brand-count { font-size: 0.72rem; color: #888; }
+
+.model-item { padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1e1e; font-size: 0.84rem; }
+.model-item:last-child { border-bottom: none; }
+.model-name { color: #ddd; flex: 1; }
+.tags { display: flex; gap: 4px; align-items: center; }
+.tag-black { background: #222; color: #ccc; border: 1px solid #444; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+.tag-comfort { background: #1B2D5B; color: #F5A623; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+.tag-year { color: #F5A623; font-size: 0.72rem; font-weight: 600; white-space: nowrap; margin-left: 4px; }
+.tag-year.special { color: #ff9944; }
+
+.no-results { grid-column: 1/-1; text-align: center; padding: 50px; color: #444; }
+footer { padding: 16px 28px; text-align: center; color: #444; font-size: 0.78rem; border-top: 1px solid #1a1a1a; }
+footer a { color: #F5A623; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🚗 Uber São Paulo — Veículos Elegíveis</h1>
+  <div class="header-badges">
+    <span class="badge-black" id="hdr-black">⬛ Black: —</span>
+    <span class="badge-comfort" id="hdr-comfort">🔵 Só Comfort: —</span>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Buscar marca ou modelo..." oninput="render()">
+  </div>
+  <div class="tab-btns">
+    <button class="tab-btn tab-all active" onclick="setTab('all',this)">Todos</button>
+    <button class="tab-btn tab-black" onclick="setTab('black',this)">⬛ Black</button>
+    <button class="tab-btn tab-comfort" onclick="setTab('comfort',this)">🔵 Só Comfort</button>
+  </div>
+</div>
+
+<div class="stats" id="stats">Mostrando <span id="cnt">0</span> modelos</div>
+<div class="grid" id="grid"></div>
+<footer>Fonte: <a href="https://www.uber.com/br/pt-br/eligible-vehicles/?city=sao-paulo" target="_blank">uber.com — São Paulo</a> — Junho 2026</footer>
+
+<script>
+// categoria: "black" | "black_2023" | "black_2025" | "comfort_only"
+const raw = [
+["Aion","ES","black"],["Aion","V","black"],["Aion","Y","black"],
+["Alfa Romeo","156","comfort_only"],["Alfa Romeo","159","black"],["Alfa Romeo","166","black"],["Alfa Romeo","939","black"],["Alfa Romeo","GTV","black"],["Alfa Romeo","Giulietta","black"],
+["Aston Martin","DBS","black"],
+["Audi","80","comfort_only"],["Audi","100","black"],["Audi","A1","comfort_only"],["Audi","A3","black"],["Audi","A3 Limousine","black"],["Audi","A3 Sportback","black"],["Audi","A4","black"],["Audi","A4 Avant","black"],["Audi","A5","black"],["Audi","A5 Avant","black"],["Audi","A6","black"],["Audi","A6 Avant","black"],["Audi","A7","black"],["Audi","A8","black"],["Audi","Q3","black"],["Audi","Q5","black"],["Audi","Q6","black"],["Audi","Q7","black"],["Audi","Q8","black"],["Audi","RS 3","black"],["Audi","RS 4","black"],["Audi","RS 6","black"],["Audi","S3","black"],["Audi","S4 Avant","black"],["Audi","S5 Sportback","black"],["Audi","S6","black"],["Audi","S7","black"],["Audi","SQ5","black"],["Audi","TTS","black"],["Audi","e-tron","black"],["Audi","e-tron Sportback","black"],
+["BMW","1-series","black"],["BMW","2-Series 225xe","black"],["BMW","Série 2 Active Tourer","black"],["BMW","2-series Gran Tourer","black"],["BMW","3-Series 330e","black"],["BMW","3-series","black"],["BMW","Série 3 Gran Turismo","black"],["BMW","316i","black"],["BMW","320i","black"],["BMW","4-series","black"],["BMW","4-series Gran Coupe","black"],["BMW","5-Series 530e","black"],["BMW","5-series","black"],["BMW","Série 5 Gran Turismo","black"],["BMW","6-series","black"],["BMW","6-series Gran Coupe","black"],["BMW","7-Series 745e","black"],["BMW","7-series","black"],["BMW","ActiveHybrid 5","black"],["BMW","M3","black"],["BMW","M5","black"],["BMW","X1","black"],["BMW","X2","black"],["BMW","X3","black"],["BMW","X4","black"],["BMW","X5","black"],["BMW","X6","black"],["BMW","X7","black"],
+["BYD","Atto 2","black"],["BYD","D1","black"],["BYD","Dolphin","black"],["BYD","Dolphin GS","black"],["BYD","Dolphin Plus","black"],["BYD","Dolphin SE","comfort_only"],["BYD","E5","black"],["BYD","Han EV","black"],["BYD","KING DM-i","black"],["BYD","Seal","black"],["BYD","Song Plus","black"],["BYD","Song Plus Champion","black"],["BYD","Song Pro","black"],["BYD","TAN","black"],["BYD","Tang","black"],["BYD","Yuan Plus","black"],["BYD","Yuan Pro","black"],["BYD","e6","black"],
+["Cadillac","DeVille","black"],["Cadillac","Eldorado","black"],["Cadillac","Escalade","black"],["Cadillac","Sevilha","black"],
+["Chang'an Suzuki","S-Cross","black"],
+["Chery","A5","black"],["Chery","A6","black"],["Chery","Arrizo 3","black"],["Chery","Arrizo 5","black"],["Chery","Arrizo 5e","black"],["Chery","Arrizo 6","black"],["Chery","Arrizo 7","black"],["Chery","Arrizo M7","black"],["Chery","Grand Tiggo","black"],["Chery","Tiggo","black"],["Chery","Tiggo 2","comfort_only"],["Chery","Tiggo 3","comfort_only"],["Chery","Tiggo 3X","comfort_only"],["Chery","Tiggo 4","black"],["Chery","Tiggo 5","black"],["Chery","Tiggo 5X","black"],["Chery","Tiggo 5X Pro Hybrid","comfort_only"],["Chery","Tiggo 7","black"],["Chery","Tiggo 7 Pro","black"],["Chery","Tiggo 8","black"],["Chery","Tiggo 8 Pro","black"],
+["Chirey","Tiggo 8 Pro","black"],
+["Chevrolet","Bolt","black"],["Chevrolet","Bolt EUV","black"],["Chevrolet","Bolt EV","black"],["Chevrolet","Captiva","black"],["Chevrolet","Cobalt","comfort_only"],["Chevrolet","Cruze","black"],["Chevrolet","Equinox","black"],["Chevrolet","Grand Vitara","black"],["Chevrolet","Joy Plus","comfort_only"],["Chevrolet","Malibu","black"],["Chevrolet","Onix Plus","comfort_only"],["Chevrolet","Prisma","comfort_only"],["Chevrolet","SPARK EUV","black"],["Chevrolet","Sonic","comfort_only"],["Chevrolet","Spin","comfort_only"],["Chevrolet","Tracker","black"],["Chevrolet","Trailblazer","black"],
+["Chrysler","300","black"],["Chrysler","Pacifica","comfort_only"],["Chrysler","Town and Country","black"],
+["Citroën","Aircross","comfort_only"],["Citroën","Basalt","comfort_only"],["Citroën","C3 Aircross","comfort_only"],["Citroën","C4 Aircross","comfort_only"],["Citroën","C4 Cactus","black"],["Citroën","C4 Lounge","black"],["Citroën","C4 Picasso","black"],["Citroën","C4L","black"],["Citroën","DS4","comfort_only"],["Citroën","DS5","black"],["Citroën","Grand Picasso","black"],
+["Dodge","Caravan","black"],["Dodge","Grand Caravan","black"],["Dodge","Journey","black"],
+["Dongfeng","Seres 3","black"],
+["Fiat","Argo","comfort_only"],["Fiat","Cronos","comfort_only"],["Fiat","Fastback","black"],["Fiat","Freemont","black"],["Fiat","Idea Adventure","comfort_only"],["Fiat","Idea Attractive","comfort_only"],["Fiat","Pulse","comfort_only"],
+["Ford","Bronco","black"],["Ford","EcoSport","comfort_only"],["Ford","Fusion","black"],
+["GAC","AION V","black"],["GAC","Aion ES","black"],["GAC","Aion UT","comfort_only"],["GAC","Aion Y","black"],["GAC","GS4","black"],["GAC","Hyptec HT","black"],
+["GWM","Haval H6","black"],["GWM","Ora 03","comfort_only"],["GWM","Ora 5","black"],
+["Geely","EX2","comfort_only"],["Geely","EX5","black"],["Geely","EX5 Max","black"],["Geely","Emgrand EC7","comfort_only"],
+["Grande Muralha","Haval H6","black"],
+["Haval","H6","black"],["Haval","Novo Haval H6","black"],
+["Holden","Cruze","black"],
+["Honda","Accord","black"],["Honda","Accord Hybrid","black"],["Honda","CR-V","black"],["Honda","City","black_2023"],["Honda","City Hatchback","black_2023"],["Honda","Civic","black"],["Honda","Civic e:HEV","black"],["Honda","HR-V","black"],["Honda","WR-V","black"],["Honda","ZR-V","black"],
+["Hyundai","Azera","black"],["Hyundai","Creta","black"],["Hyundai","Elantra","black"],["Hyundai","Equus","comfort_only"],["Hyundai","Genesis","black"],["Hyundai","HB20S","comfort_only"],["Hyundai","HB20x","comfort_only"],["Hyundai","IONIQ 5","black"],["Hyundai","IONIQ 6","black"],["Hyundai","IONIQ Electric","black"],["Hyundai","Ioniq","black"],["Hyundai","Ioniq Plug-in Hybrid","black"],["Hyundai","Kona","comfort_only"],["Hyundai","Kona Electric","black"],["Hyundai","Kona Hybrid","comfort_only"],["Hyundai","Santa Fe","black"],["Hyundai","Santa Fe Sport","black"],["Hyundai","Sonata","black"],["Hyundai","Tucson","black"],["Hyundai","Veracruz","black"],["Hyundai","i30","black"],["Hyundai","ix35","black"],
+["JAC","T60","black"],
+["JAC Motors","A-Class","black"],["JAC Motors","E-JS4","black"],["JAC Motors","EJ7","black"],["JAC Motors","J3 Turin","comfort_only"],["JAC Motors","J4","black"],["JAC Motors","S3","comfort_only"],["JAC Motors","T40","black"],["JAC Motors","T5","black"],["JAC Motors","T50","black"],["JAC Motors","T60 Plus","black"],["JAC Motors","T6","comfort_only"],["JAC Motors","T8","black"],["JAC Motors","T80","black"],["JAC Motors","iEV 40","comfort_only"],["JAC Motors","iEV6S","comfort_only"],
+["JAECOO","J7","black"],
+["Jaguar","E-PACE","black"],["Jaguar","F-PACE","black"],["Jaguar","XE","black"],["Jaguar","XF","black"],["Jaguar","XF Sportbrake","comfort_only"],
+["Jeep","Cherokee","black"],["Jeep","Commander","black"],["Jeep","Compass","black"],["Jeep","Grand Cherokee","black"],["Jeep","Renegade","black"],["Jeep","Wrangler","black"],
+["Jetour","S06","black"],["Jetour","T1","black"],["Jetour","T2","black"],
+["Kaiyi","KYX7","black"],
+["Kia","Cadenza","black"],["Kia","Carens","comfort_only"],["Kia","Carnival","black"],["Kia","Cerato","black"],["Kia","E-Niro","black"],["Kia","Mohave","black"],["Kia","Optima","black"],["Kia","Rio","comfort_only"],["Kia","Sorento","black"],["Kia","Soul","black"],["Kia","Sportage","black"],["Kia","Stonic","black"],
+["Land Rover","Defender","black"],["Land Rover","Discovery","black"],["Land Rover","Discovery Sport","black"],["Land Rover","LR2","black"],["Land Rover","LR3","black"],["Land Rover","LR4","black"],["Land Rover","Range Rover","black"],["Land Rover","Range Rover Evoque","black"],["Land Rover","Range Rover Sport","black"],["Land Rover","Range Rover Velar","black"],["Land Rover","Range Rover Vogue","black"],
+["Leapmotor","B10","black"],["Leapmotor","c10","black"],
+["Lexus","CT","comfort_only"],["Lexus","CT200h","black"],["Lexus","ES","black"],["Lexus","NX","black"],["Lexus","NX 300h","black"],["Lexus","RX","black"],["Lexus","UX Hybrid","black"],
+["Lifan","620","comfort_only"],["Lifan","X60","comfort_only"],["Lifan","X7","black"],
+["MG","MG4","comfort_only"],["MG","MGS5 EV","black"],
+["Maruti Suzuki","S-Cross","black"],
+["Mercedes-Benz","A-Class","black"],["Mercedes-Benz","B-Class","black"],["Mercedes-Benz","B200","black"],["Mercedes-Benz","C 180","black"],["Mercedes-Benz","C 200","black"],["Mercedes-Benz","C 250","black"],["Mercedes-Benz","C-Class","black"],["Mercedes-Benz","CLA-Class","black"],["Mercedes-Benz","E-Class","black"],["Mercedes-Benz","E250","black"],["Mercedes-Benz","GLA-Class","black"],["Mercedes-Benz","GLE-Class","black"],["Mercedes-Benz","M-Class","black"],["Mercedes-Benz","ML Class","black"],["Mercedes-Benz","S-Class","black"],["Mercedes-Benz","Vito","comfort_only"],
+["Mitsubishi","ASX","black"],["Mitsubishi","Airtrek","black"],["Mitsubishi","Eclipse Cross","black"],["Mitsubishi","Lancer","black"],["Mitsubishi","Outlander","black"],["Mitsubishi","Outlander Sport","black"],["Mitsubishi","Pajero","black"],["Mitsubishi","Pajero Full","black"],["Mitsubishi","Pajero Sport","black"],["Mitsubishi","Pajero TR4","comfort_only"],
+["NETA","X","black"],
+["Nissan","Altima","black"],["Nissan","Kait","comfort_only"],["Nissan","Kicks","black"],["Nissan","LEAF","black"],["Nissan","LEAF EV","black"],["Nissan","Pathfinder","black"],["Nissan","Sentra","black"],["Nissan","V-Drive","comfort_only"],["Nissan","Versa","comfort_only"],["Nissan","Versa V-Drive","comfort_only"],
+["Oldsmobile","19","comfort_only"],
+["Omoda","5","black"],["Omoda","E5","black"],
+["Peugeot","208","comfort_only"],["Peugeot","2008","black_2025"],["Peugeot","308","comfort_only"],["Peugeot","3008","black"],["Peugeot","408","comfort_only"],["Peugeot","508","comfort_only"],["Peugeot","5008","black"],["Peugeot","E-2008","comfort_only"],["Peugeot","E-208","black"],
+["Porsche","Caiena","black"],["Porsche","Macan","black"],["Porsche","Macan Turbo","comfort_only"],
+["Renault","Boreal","black"],["Renault","Captur","black"],["Renault","Duster","black_2023"],["Renault","Fluence","comfort_only"],["Renault","Kardian","comfort_only"],["Renault","Logan","comfort_only"],["Renault","Megane E-Tech","black"],["Renault","New Logan","comfort_only"],["Renault","Zoe","comfort_only"],
+["Ssangyong","Korando","black"],["Ssangyong","Kyron","comfort_only"],["Ssangyong","XLV","black"],
+["Subaru","Forester","black"],["Subaru","Impreza","black"],["Subaru","WRX","comfort_only"],["Subaru","XV Crosstrek","black"],
+["Suzuki","Grand Vitara","black"],["Suzuki","S-Cross","black"],["Suzuki","Vitara","comfort_only"],
+["Toyota","Camry","black"],["Toyota","Camry Hybrid","black"],["Toyota","Corolla","black"],["Toyota","Corolla Altis","black"],["Toyota","Corolla Altis Hybrid","black"],["Toyota","Corolla Ceres","black"],["Toyota","Corolla Cross","black"],["Toyota","Corolla Cross Hybrid","black"],["Toyota","Corolla EX","black"],["Toyota","Corolla Hybrid","black"],["Toyota","Etios Sedan","comfort_only"],["Toyota","Hilux SW4","black"],["Toyota","Prius","black"],["Toyota","Prius+","black"],["Toyota","RAV4","black"],["Toyota","SW4","black"],["Toyota","Sienna","black"],["Toyota","Yaris","comfort_only"],["Toyota","Yaris Ativ","comfort_only"],["Toyota","Yaris Cross","black"],["Toyota","Yaris Cross Hybrid","black"],["Toyota","Yaris Sedan","comfort_only"],["Toyota","Yaris iA","comfort_only"],
+["Volkswagen","CC","black"],["Volkswagen","Golf","black"],["Volkswagen","Jetta","black"],["Volkswagen","Jetta Clasico","black"],["Volkswagen","Jetta GLI","black"],["Volkswagen","Jetta SportWagen","black"],["Volkswagen","Nivus","black_2023"],["Volkswagen","Passat","black"],["Volkswagen","Polo","comfort_only"],["Volkswagen","Polo Sedan","comfort_only"],["Volkswagen","Polo Track","comfort_only"],["Volkswagen","Space Cross","comfort_only"],["Volkswagen","T-Cross","black"],["Volkswagen","Taos","black"],["Volkswagen","Tera","comfort_only"],["Volkswagen","Tiguan","black"],["Volkswagen","Touareg","black"],["Volkswagen","Virtus","black_2025"],["Volkswagen","Voyage","comfort_only"],
+["Volvo","EX30","black"],["Volvo","S40","black"],["Volvo","S60","black"],["Volvo","S70","black"],["Volvo","S80","black"],["Volvo","S90","black"],["Volvo","V40","black"],["Volvo","V50","black"],["Volvo","V60","black"],["Volvo","V70","black"],["Volvo","XC40","black"],["Volvo","XC40 Electric","black"],["Volvo","XC60","black"],["Volvo","XC70","black"],["Volvo","XC90","black"],
+];
+
+// Agrupar por marca
+const brands = {};
+raw.forEach(([brand, model, cat]) => {
+  if (!brands[brand]) brands[brand] = [];
+  brands[brand].push({ model, cat });
+});
+
+let currentTab = 'all';
+
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function yearLabel(cat) {
+  if (cat === 'black_2023') return '2023+';
+  if (cat === 'black_2025') return '2025+';
+  return '2019+';
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  let totalBlack = 0, totalComfort = 0, shown = 0;
+
+  Object.entries(brands).forEach(([brand, models]) => {
+    let filtered = models;
+
+    // Filtro de busca
+    if (q) filtered = filtered.filter(m => m.model.toLowerCase().includes(q) || brand.toLowerCase().includes(q));
+
+    // Filtro de tab
+    if (currentTab === 'black') filtered = filtered.filter(m => m.cat !== 'comfort_only');
+    if (currentTab === 'comfort') filtered = filtered.filter(m => m.cat === 'comfort_only');
+
+    if (!filtered.length) return;
+
+    const hasBlack = filtered.some(m => m.cat !== 'comfort_only');
+    const hasComfort = filtered.some(m => m.cat === 'comfort_only');
+
+    shown += filtered.length;
+    filtered.forEach(m => m.cat !== 'comfort_only' ? totalBlack++ : totalComfort++);
+
+    const headerClass = hasBlack && hasComfort ? 'has-both' : hasBlack ? 'has-black' : 'has-comfort';
+
+    const card = document.createElement('div');
+    card.className = 'brand-card';
+    card.innerHTML = `
+      <div class="brand-header ${headerClass}">
+        <span class="brand-name">${brand}</span>
+        <span class="brand-count">${filtered.length} modelo${filtered.length>1?'s':''}</span>
+      </div>
+      <div>
+        ${filtered.map(m => `
+          <div class="model-item">
+            <span class="model-name">${m.model}</span>
+            <div class="tags">
+              ${m.cat !== 'comfort_only' 
+                ? `<span class="tag-black">BLACK</span><span class="tag-year ${m.cat !== 'black' ? 'special' : ''}">mín. ${yearLabel(m.cat)}</span>`
+                : `<span class="tag-comfort">COMFORT</span>`}
+            </div>
+          </div>`).join('')}
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  if (!shown) grid.innerHTML = '<div class="no-results">Nenhum modelo encontrado.</div>';
+
+  document.getElementById('cnt').textContent = shown;
+  document.getElementById('hdr-black').textContent = `⬛ Black: ${totalBlack}`;
+  document.getElementById('hdr-comfort').textContent = `🔵 Só Comfort: ${totalComfort}`;
+  document.getElementById('stats').innerHTML = `Mostrando <span>${shown}</span> modelos — <span>${totalBlack}</span> com Black · <span>${totalComfort}</span> só Comfort`;
+}
+
+render();
+</script>
+</body>
+</html>
