@@ -3,83 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uber — Black & Comfort SP</title>
+<title>Yalla Car — Veículos Uber SP</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+:root {
+  --navy: #1B2D5B;
+  --gold: #F5A623;
+  --bg: #080C14;
+  --surface: #0D1421;
+  --surface2: #111827;
+  --border: #1E2D47;
+  --text: #E2E8F0;
+  --muted: #64748B;
+  --black-cat: #F8FAFC;
+  --comfort-cat: #F5A623;
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f0f; color: #e8e8e8; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
-header { background: #1a1a1a; border-bottom: 2px solid #F5A623; padding: 20px 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-header h1 { font-size: 1.3rem; font-weight: 700; color: #fff; }
-.header-badges { display: flex; gap: 8px; }
-.badge-black { background: #000; border: 1px solid #555; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
-.badge-comfort { background: #1B2D5B; color: #F5A623; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+/* GRID BACKGROUND */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: linear-gradient(rgba(27,45,91,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(27,45,91,0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none; z-index: 0;
+}
 
-.controls { padding: 16px 28px; background: #141414; border-bottom: 1px solid #222; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.search-box input { padding: 9px 14px; background: #222; border: 1px solid #333; border-radius: 8px; color: #fff; font-size: 0.9rem; outline: none; width: 240px; }
-.search-box input:focus { border-color: #F5A623; }
-.tab-btns { display: flex; gap: 6px; }
-.tab-btn { padding: 8px 18px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
-.tab-black { background: #222; color: #aaa; border: 1px solid #333; }
-.tab-black.active { background: #111; color: #fff; border-color: #fff; }
-.tab-comfort { background: #222; color: #aaa; border: 1px solid #333; }
-.tab-comfort.active { background: #1B2D5B; color: #F5A623; border-color: #F5A623; }
-.tab-all { background: #222; color: #aaa; border: 1px solid #333; }
-.tab-all.active { background: #F5A623; color: #000; border-color: #F5A623; }
+/* HEADER */
+header {
+  position: relative; z-index: 10;
+  background: linear-gradient(135deg, #0A1628 0%, #0D1F3C 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 72px;
+  backdrop-filter: blur(20px);
+}
+header::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--navy), var(--gold), transparent);
+}
+.logo-wrap img { height: 38px; object-fit: contain; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3);
+  padding: 5px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; color: var(--gold);
+}
+.live-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+.city-tag { background: var(--navy); color: #fff; padding: 5px 14px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; }
 
-.stats { padding: 10px 28px; background: #111; font-size: 0.82rem; color: #555; border-bottom: 1px solid #1a1a1a; }
-.stats span { color: #F5A623; font-weight: 700; }
+/* HERO STATS */
+.hero {
+  position: relative; z-index: 5;
+  padding: 36px 40px 28px;
+  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 24px;
+}
+.hero-title h2 { font-size: 1.8rem; font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.02em; }
+.hero-title h2 span { color: var(--gold); }
+.hero-title p { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+.stat-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 20px; min-width: 120px;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.stat-card.s-black::before { background: linear-gradient(90deg, #333, #888, #333); }
+.stat-card.s-comfort::before { background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy)); }
+.stat-card.s-total::before { background: linear-gradient(90deg, var(--gold), #fff, var(--gold)); }
+.stat-num { font-size: 2rem; font-weight: 900; letter-spacing: -0.03em; }
+.s-black .stat-num { color: #fff; }
+.s-comfort .stat-num { color: var(--gold); }
+.s-total .stat-num { color: var(--gold); }
+.stat-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
 
-.grid { padding: 20px 28px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+/* CONTROLS */
+.controls {
+  position: relative; z-index: 5;
+  padding: 0 40px 20px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.search-wrap { position: relative; flex: 1; min-width: 220px; max-width: 360px; }
+.search-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: 0.4; }
+.search-wrap input {
+  width: 100%; padding: 11px 14px 11px 40px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 0.88rem; outline: none;
+  transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(--gold); }
+.search-wrap input::placeholder { color: var(--muted); }
 
-.brand-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; overflow: hidden; }
-.brand-header { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
-.brand-header.has-black { background: #1e1e1e; border-bottom: 2px solid #333; }
-.brand-header.has-comfort { background: #1a1f2e; border-bottom: 2px solid #1B2D5B; }
-.brand-header.has-both { background: #1e1e1e; border-bottom: 2px solid #333; }
-.brand-name { font-weight: 700; font-size: 0.95rem; color: #fff; }
-.brand-count { font-size: 0.72rem; color: #888; }
+.tabs { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 3px; }
+.tab {
+  padding: 8px 20px; border-radius: 7px; border: none; cursor: pointer;
+  font-size: 0.82rem; font-weight: 700; transition: all 0.2s;
+  background: transparent; color: var(--muted); letter-spacing: 0.02em;
+}
+.tab:hover { color: var(--text); }
+.tab.active-all { background: var(--gold); color: #000; }
+.tab.active-black { background: #1a1a2e; color: #fff; border: 1px solid #333; }
+.tab.active-comfort { background: var(--navy); color: var(--gold); }
 
-.model-item { padding: 7px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e1e1e; font-size: 0.84rem; }
-.model-item:last-child { border-bottom: none; }
-.model-name { color: #ddd; flex: 1; }
-.tags { display: flex; gap: 4px; align-items: center; }
-.tag-black { background: #222; color: #ccc; border: 1px solid #444; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
-.tag-comfort { background: #1B2D5B; color: #F5A623; font-size: 0.68rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
-.tag-year { color: #F5A623; font-size: 0.72rem; font-weight: 600; white-space: nowrap; margin-left: 4px; }
-.tag-year.special { color: #ff9944; }
+.result-info { margin-left: auto; font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+.result-info span { color: var(--gold); font-weight: 700; }
 
-.no-results { grid-column: 1/-1; text-align: center; padding: 50px; color: #444; }
-footer { padding: 16px 28px; text-align: center; color: #444; font-size: 0.78rem; border-top: 1px solid #1a1a1a; }
-footer a { color: #F5A623; text-decoration: none; }
+/* GRID */
+.grid-wrap { position: relative; z-index: 5; padding: 0 40px 40px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+
+/* CARDS */
+.brand-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.brand-card:hover { transform: translateY(-2px); border-color: rgba(245,166,35,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+
+.brand-hdr {
+  padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2); position: relative; overflow: hidden;
+}
+.brand-hdr::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+}
+.hdr-black .brand-hdr::after { background: linear-gradient(90deg, transparent, #334, transparent); }
+.hdr-comfort .brand-hdr::after { background: linear-gradient(90deg, transparent, var(--navy), transparent); }
+.hdr-both .brand-hdr::after { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+.brand-icon {
+  width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 900; letter-spacing: -0.03em; margin-right: 10px; flex-shrink: 0;
+}
+.hdr-black .brand-icon { background: #1a1a2e; color: #aaa; border: 1px solid #333; }
+.hdr-comfort .brand-icon { background: rgba(27,45,91,0.5); color: var(--gold); border: 1px solid var(--navy); }
+.hdr-both .brand-icon { background: rgba(245,166,35,0.1); color: var(--gold); border: 1px solid rgba(245,166,35,0.3); }
+
+.brand-info { flex: 1; min-width: 0; }
+.brand-name { font-weight: 700; font-size: 0.9rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 0.68rem; color: var(--muted); margin-top: 1px; }
+
+.count-pill { background: rgba(255,255,255,0.05); color: var(--muted); font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; border: 1px solid var(--border); white-space: nowrap; }
+
+.model-list { padding: 4px 0; }
+.model-row {
+  padding: 7px 16px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.82rem; gap: 8px;
+  transition: background 0.1s;
+}
+.model-row:last-child { border-bottom: none; }
+.model-row:hover { background: rgba(255,255,255,0.02); }
+.model-name { color: #CBD5E1; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.67rem; font-weight: 800; padding: 3px 8px; border-radius: 5px;
+  white-space: nowrap; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.tag-b { background: #111827; color: #94A3B8; border: 1px solid #1E293B; }
+.tag-c { background: rgba(27,45,91,0.6); color: var(--gold); border: 1px solid rgba(27,45,91,0.8); }
+.year-badge { font-size: 0.67rem; font-weight: 700; color: var(--gold); background: rgba(245,166,35,0.08); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(245,166,35,0.2); white-space: nowrap; }
+.year-special { color: #ff9944; border-color: rgba(255,153,68,0.3); background: rgba(255,153,68,0.08); }
+
+.no-result { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--muted); }
+.no-result svg { opacity: 0.2; margin-bottom: 12px; }
+
+footer {
+  position: relative; z-index: 5;
+  border-top: 1px solid var(--border); padding: 16px 40px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  font-size: 0.75rem; color: var(--muted);
+}
+footer a { color: var(--gold); text-decoration: none; }
+.footer-logo img { height: 22px; opacity: 0.5; }
+
+@media (max-width: 600px) {
+  header, .hero, .controls, .grid-wrap, footer { padding-left: 16px; padding-right: 16px; }
+  .hero-title h2 { font-size: 1.3rem; }
+  .grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🚗 Uber São Paulo — Veículos Elegíveis</h1>
-  <div class="header-badges">
-    <span class="badge-black" id="hdr-black">⬛ Black: —</span>
-    <span class="badge-comfort" id="hdr-comfort">🔵 Só Comfort: —</span>
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCABWALADASIAAhEBAxEB/8QAHAABAAICAwEAAAAAAAAAAAAAAAcIBQYBAgQD/8QARRAAAQMDAgMCCwQGCAcAAAAAAQIDBAAFEQYHEiExCEETFCI3UWFxdIGxshUyNnUXM3KCwcIjJlaRk6Gi0kJSU2JlkrP/xAAcAQEAAgMBAQEAAAAAAAAAAAAABQYDBAcBCAL/xABAEQABAwIEAgcEBgcJAAAAAAABAAIDBBEFEiExBkETIlFhcYGRBxQVsTI1NnKhwRYjMzRSwuFCRUZzgoOistH/2gAMAwEAAhEDEQA/AJopSlfNK6MlKUoiUpUS3LfOzW+TJYl6bvraoz5YdKm0AJWM+Tni68iak8NwatxRzm0kZeW2va3PbcrVqq2CkAMzrXUtUqHWO0Bpt1RxY7zwpwVqCWzwDIGT5XTJH99TFXuJ4JX4UWisiLM17Xtra19vELylrqerv0Ls1t0pSlRa20pSlESlKURKUpREpSlESlKURKUpREpSlEXymSWIcR6XKdQywyguOOLOEoSBkk+rFVsuG+t+GulT4QSqwIc4EwVNpBcaB+8VYyFnr1wOQweecz2m9dcSxou1v+SnDlxWg9T1S18lH9311Aldx4B4Ip30RrMRjDjKLNBGze3uJ5HcDUHVUTiHHZGziGmdbKdSOZ7PAc+9Xq07ebdqCzR7vapCX4shPEhQ6j0pI7iDyIqLO1gf6jWwf+TT/wDJyoq2U3Cf0XexGmOLXZJawJLfXwSugdSPSO8DqPWBUodqh9mToKzSI7qHWXZ6VtrQrKVJLSyCD3jBqDpeFpsA4rpo943OJa7usdD3jn681vS4qzEcIlds4DUfn4FavoHZu26t0Bab8xeZMKbIW4XwptLjZCXVIwkciDhPUk+yrIVGnZpf8LtVFbz+pkvI/wBXF/NWy6h17pHT9yVbbzeW4cpKQstraWeR6HISRUBxXUYpiuLTUZzSiJ78oAuQ0u7he2g32UjhEdJSUbJhZucNuSbXNu/zWzUrxWO62692tm6WqUiVDez4N1IICsEg9efUEVrSN0tArkiM3qNhbql8CUpacOVZxgYTz51VocMrZ3PZFC5xZ9IBpJHjYabHdSr6qCMBz3gA7XI18O1blSvPcpsS2wHp8+Q3GisIK3XXFYSkD01qH6WdvP7TR/8ABd/20pcMrKxpdTwueBvlaT8gktVBCbSPDfEgLd6VqNr3K0Pc7ixb4OoGH5UhYbabDTgKlHoOacUue5eh7ZcZFvnagYZlR3C262WnCUqHUck4rN8ExLP0fu781r2yOvbttbZfj36ly5ukbbtuFt1K6R3W5DDb7KuNtxIWhXpBGQa8Go77adO277RvUxEOLxhvwikqI4j0HIE91aEcMksgiY0lx0AAub9llsOe1jczjYdqyVKwGmNZ6Z1NJejWK7NzXWUcbiUoWnhTnGfKA76z9fqoppqaQxzsLXdhBB9CvI5WStzRkEdo1SlY/UF7tOn7aq43mc1CipUE+EcPUnoABzJ9Q9dax+lnbz+00f8AwXf9tbNNhVdVs6Snhe9va1pI9QFilq4IXZZHgHvIC3ela1p3XmkdQ3IW6zXpqXKKCsNpbWDwjqeaQK2WsFTST0j+jnYWO7HAg+hWSKaOZuaNwI7jdKw2t70jTukrne1AExI6loB6KX0QPiogfGszWnb0Wm43zbS7Wu1RlSpj/gfBtJIBVwvIUeZIHQE/Cs+ExQzV8Ec5sxz2hxOgAJF9fBY6t72U73RjrAG3jbRU7lyH5ct6XJdU6+8tTjjijkqUTkk+smvlXZaVIWUKGFJOCPXXWvsRoAADdlxgkk6pWbk6muUrRzGl5TnhocWV4xGKj5TWUqCkD/tPFn1HPprCVkNP2a5X+7M2u0xHJUp44ShA6DvJPcB3k8hWvVMgLRJPazOtc8rc78tL+SyROkvljvd2lhz7lZDsrFw7cSgtJCRc3Qg+keDb/jmsH2r9P+EhWvU7KMqZUYcggf8ACcqQfYDxD94VLG32m2dJ6RgWJpYcUwjLrgH6xxRypXsyTj1Yrtr2xI1Lo66WRQHFJYIaJ6JcHlIPwUBXzZDxHHBxUcTiP6svN+9p0J9NfFdOfhjpMJFK76Qb+I1+eir7trr77C2e1Pa1P8MxpQEDnzy+OE8P7PCV/GsJ2fbB9ublwVuI4o9uBmu8uWUY4P8AWUn4GtBdQtpxbTiVIWhRSpJGCCOoNWU7K9g8R0jMvzqMO3J/gaJ/6TeRke1RX/cK61xUKfh/C62qg0fUEDzcANPLM7xJVPwnpMRq4In/AEYx+AN//AtM7UWobq9qxGnDJKLbHYbeDKOQWtWfKV6cd3orG2HZm53bRjOpm71DbZdiqkBpTaioAAnGendXTtNedJ73Rn5Gt40dujo227WRbDLuDyJ7dvWwpAjLICyFYGQMd4qNbNiWH8OUBwiM5nZc2VubQi5J0PPmtospajE6gVjtBe1zbY6D+iiHaXzmad/MGvqrjdjzl6i/MHfqNc7S+czTv5g19VcbsecvUX5g79Rq5/4g/wBn+dQn93f6/wCVXD03+Hbb7o19AqPO0/5sT78z8lVIem/w7bfdGvoFR52n/NiffmfkqvnXhn7RU/8AmD5rpGKfVsn3fyWhdkv8U3n3JP1irH1XDsl/im8+5J+sVY+pT2lfaCXwb/1C1eGPq5vifmqhb66hut53BuUOdJKotukLjxWU8kISDjOP+Y45n+AArK6r2Zuen9ISdRvXqG+1HaQ4WkNqCiFEDGT+1Wq7secvUX5g79RqX9x90dG3rbOfZLfcHnJz0dtCEGMtIJCkk8yMdxrqlRNiVBT4XDhcZ6N2XpLNuADk1Oml7uN/EqpxspaiSqfVO6wvluba6+vJaR2ZPOi17m98hVqqqr2ZPOi17m98hVqq5t7U/rwfcb83KzcJ/uB+8fySlKVzdWZUq0jaot11W6bjkWuGHJk9QOP6Fs5KcjmCo8KBjvUKmTa3RWgtc2N+7uaGXaWEvFpnF2fdLuB5R54wASB388+io0tMUI2q1jPAwty4xWCodSkLUop9mSk/AeirN7bQGbZoCxQ2Gw2lMBpSgO9akhSj8VEn413Tj3G5qaAugkc14eGDK5zQAGh7jYEAklwbqDYDSxVC4foWSyASNBFi43AO5IA1GgFidO1V13/0fZNKahtcLT8RbCJMcrWlTql8SuPA+8TWz2a7TLVu7b9AWCJDtVvjS20S3IrQD0zwaAtRccPMg4PIY5E9a9+/ETx/d/RUIjKXltIV+yXxn/LNfDScPxntUXd7GfFA897MtpR/PXkVf71gcZqznLaeV/WN7uzBrSb7ka2vtyR9P0Ve4QjKDIxummlrkefNT5XC1JQhS1qCUpGSScACua1HeGVdI+3l0bs0GZNnSm/Fm24rKnFgL5KVhIJGE8XP04ri1DSmrqY4AbZiBc7C538leJ5RDE6Qi9gSqnakkDUWt7hJtscAXG4LVHaSMZ41nhHtOR8TVzdL2lmw6ct9mYwW4cdDWQPvEDmr4nJ+NVy2I0FfFbiQ517sVxgxICVSQqXFW0lbg5IAKgMkEhX7tWfrpftOxWKSSnw6mddkbbmxvqdBr2gD8VWOFqR7WyVMgs5x/qfU/JVU7TXnSe90Z+Rr6WDZm53fRrGpW71DaZdjKkBpTaioAA8s9O6sj2h9Najum47su2WC6zo5itJDseG44jIByMpBGamDQUKbG2bhQJMSQzLTbFoUw42UuBWFcik88+qp6s4knwrh3DzRSgOOUO2Jtl7Dso+HDGVeJVAnabC5G41uqybS+czTv5g19VcbsecvUX5g79RrN7YaS1XD3DsMqXpm9R2GpzanHXYDqUISDzJJTgCuNzdI6rl7hX6VE0xepDDs51bbrUB1SFpKjgghOCKunxCl+PZulbbot7j+PxUH7vN8PtlN8/Yf4VanTf4dtvujX0Co87T/AJsT78z8lVBqLfuu2hKEQdapSkYSkNSgAPQOVSJerTqq4dnaHCmW29S7v9o8S2XWHVyOHjXglJHFjGK5jFwrHg2J01aapjwZWiw5XubnXYWVpfizq2llg6Itsw7+XcvB2S/xTefck/WKsfVL7dprcO2uKct1g1TDWscKlMQ32yoegkAVum1MTcdvcOzLu8bViYAfPhjKRIDQHCfvcXLGcdak+NOFosTqpsTZVsADb5dCTlbtvzstXA8VfSxMpXQu338T4LSd2POXqL8wd+o1teq9mLnp/SMnUT16hvNR2kulpDagohRAxk+2sdubpHVcvcK/SommL1IYdnOrbdagOqQtJUcEEJwRVgt1YU2btHc4MOJIkylxGkpYabK3FEKRkBI5k8jUvinE01AzC4qSVuV+UP2OnUGvZuVp0mFsqDVvmYbtuW7jXrevJQX2ZPOi17m98hVqqrV2d9Najte47cu52C6wY4iOpLsiG42jJAwMqAGasrVA9p00c2NB0bg4ZG7G/MqxcLMcyhIcLdY/klKUrnasaq5Bj8PZ31JII5uX5I+A8H/EmrNWlnxa1RI+MeCYQjHsSBXkRp2wItS7UmyW77PWvwi4xjILSlZzxFOME8hzPorKVaeIuIW4sLNaR13v17HBgA8sp9VFYbhxo9Sb9UD0Lifmop11F8b7QOikEZS3GedPq4QtQ/zAr4bbxQvfvXM3vaQhr/3KT/JUqOQILlwauDkKMuYygoakKaSXEJPUBWMgH0CuItut8WXJmRYMViTKIMh5tlKVvEdONQGVYyete/pGBRmmDT+y6Pz6TOT5jRefDSZ+lJ/t5v8Ajlt66r1UpSqqpZKUpREpSlESlKURKUpREpSlESlKURKUpREpSlESlKURKUpREpSlESlKURKUpREpSlESlKURKUpREpSlESlKURf/2Q==" alt="Yalla Car">
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>Dados Oficiais Uber</div>
+    <div class="city-tag">📍 SÃO PAULO</div>
   </div>
 </header>
 
-<div class="controls">
-  <div class="search-box">
-    <input type="text" id="search" placeholder="Buscar marca ou modelo..." oninput="render()">
+<div class="hero">
+  <div class="hero-title">
+    <h2>Veículos <span>Elegíveis</span><br>Uber Premium</h2>
+    <p>Lista completa atualizada — Junho 2026</p>
   </div>
-  <div class="tab-btns">
-    <button class="tab-btn tab-all active" onclick="setTab('all',this)">Todos</button>
-    <button class="tab-btn tab-black" onclick="setTab('black',this)">⬛ Black</button>
-    <button class="tab-btn tab-comfort" onclick="setTab('comfort',this)">🔵 Só Comfort</button>
+  <div class="stat-cards">
+    <div class="stat-card s-total">
+      <div class="stat-num" id="s-total">406</div>
+      <div class="stat-label">Total modelos</div>
+    </div>
+    <div class="stat-card s-black">
+      <div class="stat-num" id="s-black">327</div>
+      <div class="stat-label">⬛ Uber Black</div>
+    </div>
+    <div class="stat-card s-comfort">
+      <div class="stat-num" id="s-comfort">79</div>
+      <div class="stat-label">🔵 Só Comfort</div>
+    </div>
   </div>
 </div>
 
-<div class="stats" id="stats">Mostrando <span id="cnt">0</span> modelos</div>
-<div class="grid" id="grid"></div>
-<footer>Fonte: <a href="https://www.uber.com/br/pt-br/eligible-vehicles/?city=sao-paulo" target="_blank">uber.com — São Paulo</a> — Junho 2026</footer>
+<div class="controls">
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Buscar marca ou modelo..." oninput="render()">
+  </div>
+  <div class="tabs">
+    <button class="tab active-all" id="tab-all" onclick="setTab('all')">Todos</button>
+    <button class="tab" id="tab-black" onclick="setTab('black')">⬛ Black</button>
+    <button class="tab" id="tab-comfort" onclick="setTab('comfort')">🔵 Só Comfort</button>
+  </div>
+  <div class="result-info">Mostrando <span id="cnt">0</span> modelos</div>
+</div>
+
+<div class="grid-wrap">
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer>
+  <span>Fonte: <a href="https://www.uber.com/br/pt-br/eligible-vehicles/?city=sao-paulo" target="_blank">uber.com/eligible-vehicles</a> — São Paulo</span>
+  <div class="footer-logo"><img src="data:image/png;base64,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" alt="Yalla Car"></div>
+</footer>
 
 <script>
-// categoria: "black" | "black_2023" | "black_2025" | "comfort_only"
 const raw = [
 ["Aion","ES","black"],["Aion","V","black"],["Aion","Y","black"],
 ["Alfa Romeo","156","comfort_only"],["Alfa Romeo","159","black"],["Alfa Romeo","166","black"],["Alfa Romeo","939","black"],["Alfa Romeo","GTV","black"],["Alfa Romeo","Giulietta","black"],
@@ -137,81 +303,91 @@ const raw = [
 ["Volvo","EX30","black"],["Volvo","S40","black"],["Volvo","S60","black"],["Volvo","S70","black"],["Volvo","S80","black"],["Volvo","S90","black"],["Volvo","V40","black"],["Volvo","V50","black"],["Volvo","V60","black"],["Volvo","V70","black"],["Volvo","XC40","black"],["Volvo","XC40 Electric","black"],["Volvo","XC60","black"],["Volvo","XC70","black"],["Volvo","XC90","black"],
 ];
 
-// Agrupar por marca
 const brands = {};
-raw.forEach(([brand, model, cat]) => {
-  if (!brands[brand]) brands[brand] = [];
-  brands[brand].push({ model, cat });
-});
+raw.forEach(([b,m,c]) => { if(!brands[b]) brands[b]=[]; brands[b].push({m,c}); });
 
-let currentTab = 'all';
-
-function setTab(tab, btn) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+let tab = 'all';
+function setTab(t) {
+  tab = t;
+  ['all','black','comfort'].forEach(x => {
+    const el = document.getElementById('tab-'+x);
+    el.className = 'tab';
+    if(x===t) el.className = 'tab active-'+x;
+  });
   render();
 }
 
-function yearLabel(cat) {
-  if (cat === 'black_2023') return '2023+';
-  if (cat === 'black_2025') return '2025+';
-  return '2019+';
+function yearLabel(c) {
+  if(c==='black_2023') return 'mín. 2023';
+  if(c==='black_2025') return 'mín. 2025';
+  return 'mín. 2019';
+}
+function isSpecial(c) { return c==='black_2023'||c==='black_2025'; }
+
+function initials(brand) {
+  return brand.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
 }
 
 function render() {
   const q = document.getElementById('search').value.toLowerCase();
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
-  let totalBlack = 0, totalComfort = 0, shown = 0;
+  let cnt=0, cntB=0, cntC=0;
 
   Object.entries(brands).forEach(([brand, models]) => {
     let filtered = models;
+    if(q) filtered = filtered.filter(({m,c}) => m.toLowerCase().includes(q) || brand.toLowerCase().includes(q));
+    if(tab==='black') filtered = filtered.filter(({c}) => c!=='comfort_only');
+    if(tab==='comfort') filtered = filtered.filter(({c}) => c==='comfort_only');
+    if(!filtered.length) return;
 
-    // Filtro de busca
-    if (q) filtered = filtered.filter(m => m.model.toLowerCase().includes(q) || brand.toLowerCase().includes(q));
+    const hB = filtered.some(({c})=>c!=='comfort_only');
+    const hC = filtered.some(({c})=>c==='comfort_only');
+    const hdrClass = hB&&hC?'hdr-both':hB?'hdr-black':'hdr-comfort';
 
-    // Filtro de tab
-    if (currentTab === 'black') filtered = filtered.filter(m => m.cat !== 'comfort_only');
-    if (currentTab === 'comfort') filtered = filtered.filter(m => m.cat === 'comfort_only');
-
-    if (!filtered.length) return;
-
-    const hasBlack = filtered.some(m => m.cat !== 'comfort_only');
-    const hasComfort = filtered.some(m => m.cat === 'comfort_only');
-
-    shown += filtered.length;
-    filtered.forEach(m => m.cat !== 'comfort_only' ? totalBlack++ : totalComfort++);
-
-    const headerClass = hasBlack && hasComfort ? 'has-both' : hasBlack ? 'has-black' : 'has-comfort';
+    cnt += filtered.length;
+    filtered.forEach(({c}) => c!=='comfort_only'?cntB++:cntC++);
 
     const card = document.createElement('div');
     card.className = 'brand-card';
+
+    const blackCount = filtered.filter(({c})=>c!=='comfort_only').length;
+    const comfortCount = filtered.filter(({c})=>c==='comfort_only').length;
+    let subParts = [];
+    if(blackCount) subParts.push(`${blackCount} Black`);
+    if(comfortCount) subParts.push(`${comfortCount} Comfort`);
+
     card.innerHTML = `
-      <div class="brand-header ${headerClass}">
-        <span class="brand-name">${brand}</span>
-        <span class="brand-count">${filtered.length} modelo${filtered.length>1?'s':''}</span>
+      <div class="${hdrClass}">
+        <div class="brand-hdr">
+          <div class="brand-icon">${initials(brand)}</div>
+          <div class="brand-info">
+            <div class="brand-name">${brand}</div>
+            <div class="brand-sub">${subParts.join(' · ')}</div>
+          </div>
+          <div class="count-pill">${filtered.length}</div>
+        </div>
       </div>
-      <div>
-        ${filtered.map(m => `
-          <div class="model-item">
-            <span class="model-name">${m.model}</span>
-            <div class="tags">
-              ${m.cat !== 'comfort_only' 
-                ? `<span class="tag-black">BLACK</span><span class="tag-year ${m.cat !== 'black' ? 'special' : ''}">mín. ${yearLabel(m.cat)}</span>`
-                : `<span class="tag-comfort">COMFORT</span>`}
+      <div class="model-list">
+        ${filtered.map(({m,c}) => `
+          <div class="model-row">
+            <span class="model-name">${m}</span>
+            <div style="display:flex;align-items:center;gap:4px">
+              ${c!=='comfort_only'
+                ? `<span class="tag tag-b">BLACK</span><span class="year-badge ${isSpecial(c)?'year-special':''}">${yearLabel(c)}</span>`
+                : `<span class="tag tag-c">COMFORT</span>`}
             </div>
           </div>`).join('')}
       </div>`;
     grid.appendChild(card);
   });
 
-  if (!shown) grid.innerHTML = '<div class="no-results">Nenhum modelo encontrado.</div>';
+  if(!cnt) grid.innerHTML = '<div class="no-result"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><br>Nenhum modelo encontrado</div>';
 
-  document.getElementById('cnt').textContent = shown;
-  document.getElementById('hdr-black').textContent = `⬛ Black: ${totalBlack}`;
-  document.getElementById('hdr-comfort').textContent = `🔵 Só Comfort: ${totalComfort}`;
-  document.getElementById('stats').innerHTML = `Mostrando <span>${shown}</span> modelos — <span>${totalBlack}</span> com Black · <span>${totalComfort}</span> só Comfort`;
+  document.getElementById('cnt').textContent = cnt;
+  document.getElementById('s-total').textContent = cnt;
+  document.getElementById('s-black').textContent = cntB;
+  document.getElementById('s-comfort').textContent = cntC;
 }
 
 render();
